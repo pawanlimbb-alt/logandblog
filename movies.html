@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOVIES — Log & Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:    #FFF5E6;
+    --charcoal: #2D2D2D;
+    --orange:   #E8600A;
+    --teal:     #1B8A8F;
+    --red:      #C0392B;
+    --yellow:   #F5C518;
+    --pink:     #E8738A;
+    --muted:    #6B5B4E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 56px;
+    background: var(--charcoal);
+    border-bottom: 3px solid var(--orange);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    display: flex; gap: 4px; align-items: baseline;
+    text-decoration: none;
+  }
+  .nav-logo span:nth-child(1) { color: #fff; }
+  .nav-logo span:nth-child(2) { color: var(--orange); font-size: 1.2rem; }
+  .nav-logo span:nth-child(3) { color: var(--yellow); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: #bbb; text-decoration: none; font-size: .7rem;
+    letter-spacing: 2px; text-transform: uppercase; transition: color .2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--teal); }
+  .nav-cta {
+    background: var(--orange); color: #fff; border: none;
+    padding: .45rem 1.1rem; font-family: 'Space Mono', monospace;
+    font-size: .7rem; letter-spacing: 1px; cursor: pointer;
+    text-decoration: none; transition: background .2s;
+  }
+  .nav-cta:hover { background: #d45508; }
+
+  /* ── HERO BANNER ── */
+  .movies-hero {
+    padding-top: 56px;
+    background: var(--charcoal);
+    position: relative;
+    overflow: hidden;
+    min-height: 420px;
+    display: flex;
+    align-items: flex-end;
+  }
+  /* Film strip top decoration */
+  .film-strip-top {
+    position: absolute;
+    top: 56px; left: 0; right: 0;
+    height: 28px;
+    background: var(--charcoal);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 2px solid #444;
+  }
+  .film-hole {
+    width: 16px; height: 12px;
+    background: #111;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin: 0 8px;
+  }
+  /* Big decorative text behind */
+  .hero-bg-text {
+    position: absolute;
+    bottom: -10px; right: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(8rem, 18vw, 18rem);
+    color: rgba(255,255,255,.04);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -2px;
+  }
+  /* Reel decoration circles */
+  .reel {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.06);
+  }
+  .reel::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.04);
+  }
+  .reel-1 { width: 260px; height: 260px; top: 30px; right: 120px; }
+  .reel-2 { width: 160px; height: 160px; top: 80px; right: 60px; }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 3rem 3.5rem 3.5rem;
+    border-left: 8px solid var(--teal);
+    width: 100%;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--teal);
+    color: #fff;
+    font-size: .65rem; letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: .3rem .8rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero-badge::before {
+    content: '🎬';
+    font-size: .8rem;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: .9;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+  .hero-title .accent { color: var(--teal); }
+  .hero-title .accent2 { color: var(--yellow); }
+
+  .hero-sub {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: rgba(255,255,255,.55);
+    max-width: 500px;
+    line-height: 1.65;
+    margin-bottom: 2rem;
+  }
+  .hero-stats {
+    display: flex; gap: 2.5rem;
+  }
+  .h-stat { }
+  .h-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--yellow);
+    line-height: 1;
+  }
+  .h-stat-label {
+    font-size: .6rem; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #666;
+    margin-top: .1rem;
+  }
+
+  /* ── TICKER ── */
+  .ticker {
+    background: var(--teal);
+    color: var(--charcoal);
+    font-size: .7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: .6rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-inner {
+    display: inline-flex; gap: 3rem;
+    animation: ticker 28s linear infinite;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .ticker-sep { color: var(--charcoal); opacity: .5; }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: #fff;
+    border-bottom: 2px solid #eee;
+    padding: 1rem 3.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 56px;
+    z-index: 50;
+  }
+  .filter-label {
+    font-size: .6rem; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: .5rem;
+  }
+  .filter-btn {
+    background: transparent;
+    border: 2px solid #ddd;
+    padding: .35rem .9rem;
+    font-family: 'Space Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all .2s;
+    color: var(--muted);
+  }
+  .filter-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .filter-btn.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    display: inline-flex; align-items: center;
+    background: var(--charcoal);
+    color: var(--teal);
+    font-size: .65rem; letter-spacing: 3px;
+    padding: .3rem .8rem;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── FEATURED REVIEW ── */
+  .featured-review {
+    padding: 5rem 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 0;
+    border-left: 8px solid var(--teal);
+  }
+  .featured-poster {
+    background: linear-gradient(135deg, #1B8A8F 0%, #0d5c60 100%);
+    min-height: 480px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .poster-emoji { font-size: 6rem; position: relative; z-index: 2; }
+  .poster-stripe {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 3px;
+    background: rgba(255,255,255,.1);
+  }
+  .ps1 { left: 20%; }
+  .ps2 { left: 40%; }
+  .ps3 { left: 60%; }
+  .ps4 { left: 80%; }
+  .poster-badge {
+    position: absolute;
+    top: 1.2rem; left: 1.2rem;
+    background: var(--yellow);
+    color: var(--charcoal);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    padding: .2rem .7rem;
+    z-index: 3;
+  }
+  .poster-rating {
+    position: absolute;
+    bottom: 1.2rem; right: 1.2rem;
+    background: var(--orange);
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    padding: .5rem .9rem;
+    z-index: 3;
+  }
+  .poster-rating span { font-size: .9rem; opacity: .7; }
+
+  .featured-body {
+    background: var(--charcoal);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .featured-tag {
+    font-size: .6rem; letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 1rem;
+  }
+  .featured-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: #fff;
+    letter-spacing: .5px;
+    line-height: .95;
+    margin-bottom: .4rem;
+  }
+  .featured-year {
+    font-size: .7rem;
+    color: #666;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+  }
+  .featured-quote {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 1.35rem;
+    color: rgba(255,255,255,.85);
+    line-height: 1.55;
+    border-left: 4px solid var(--teal);
+    padding-left: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .featured-excerpt {
+    font-size: .72rem;
+    color: #888;
+    line-height: 1.9;
+    margin-bottom: 2rem;
+  }
+  .featured-meta {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    border-top: 1px solid #3a3a3a;
+    padding-top: 1.2rem;
+  }
+  .f-meta-item { }
+  .f-meta-label {
+    font-size: .55rem; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: .2rem;
+  }
+  .f-meta-val {
+    font-size: .75rem;
+    color: var(--yellow);
+  }
+  .read-btn {
+    display: inline-block;
+    background: var(--teal);
+    color: #fff;
+    padding: .75rem 1.8rem;
+    font-family: 'Space Mono', monospace;
+    font-size: .72rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+    margin-top: 1.5rem;
+    align-self: flex-start;
+  }
+  .read-btn:hover { background: #147076; transform: translateY(-2px); }
+
+  /* ── REVIEWS GRID ── */
+  .reviews-section {
+    padding: 5rem 3.5rem;
+    background: var(--cream);
+  }
+  .reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+  .reviews-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 1px;
+  }
+  .reviews-header h2 span { color: var(--teal); }
+  .see-all {
+    font-size: .7rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--teal); text-decoration: none;
+    border-bottom: 2px solid var(--teal); padding-bottom: 2px;
+    transition: color .2s, border-color .2s;
+  }
+  .see-all:hover { color: var(--orange); border-color: var(--orange); }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .review-card {
+    background: #fff;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s, border-color .2s;
+  }
+  .review-card:hover { transform: translateY(-5px); border-color: var(--teal); }
+
+  .rc-poster {
+    height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .rc-poster::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.4));
+  }
+  .rp1 { background: linear-gradient(135deg, #C0392B22, #C0392B55); }
+  .rp2 { background: linear-gradient(135deg, #F5C51822, #F5C51855); }
+  .rp3 { background: linear-gradient(135deg, #E8738A22, #E8738A55); }
+  .rp4 { background: linear-gradient(135deg, #1B8A8F22, #1B8A8F55); }
+  .rp5 { background: linear-gradient(135deg, #E8600A22, #E8600A55); }
+  .rp6 { background: linear-gradient(135deg, #2D2D2D22, #2D2D2D66); }
+
+  .rc-genre {
+    position: absolute; top: .8rem; left: .8rem;
+    font-size: .58rem; letter-spacing: 2px; text-transform: uppercase;
+    padding: .2rem .6rem;
+    color: #fff;
+    z-index: 2;
+  }
+  .rc-score {
+    position: absolute; bottom: .8rem; right: .8rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    color: #fff;
+    line-height: 1;
+    z-index: 2;
+    text-shadow: 0 1px 6px rgba(0,0,0,.5);
+  }
+
+  .rc-body { padding: 1.2rem; }
+  .rc-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--charcoal);
+    margin-bottom: .3rem;
+    line-height: 1.3;
+  }
+  .rc-year-author {
+    font-size: .6rem; letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: .8rem;
+  }
+  .rc-excerpt {
+    font-size: .7rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1rem;
+  }
+  .rc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: .8rem;
+    font-size: .62rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .rc-author { color: var(--orange); }
+  .rc-read { color: #bbb; }
+
+  /* Genre color mapping */
+  .genre-drama { background: var(--red); }
+  .genre-comedy { background: var(--yellow); color: var(--charcoal) !important; }
+  .genre-thriller { background: var(--charcoal); }
+  .genre-romance { background: var(--pink); }
+  .genre-scifi { background: var(--teal); }
+  .genre-action { background: var(--orange); }
+
+  /* ── MOOD SECTION ── */
+  .mood-section {
+    background: var(--charcoal);
+    padding: 5rem 3.5rem;
+  }
+  .mood-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: #fff;
+    letter-spacing: 1px;
+    margin-bottom: .5rem;
+  }
+  .mood-section h2 span { color: var(--yellow); }
+  .mood-sub {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    color: #666;
+    font-size: .9rem;
+    margin-bottom: 3rem;
+  }
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .mood-card {
+    padding: 2rem 1.5rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s;
+  }
+  .mood-card:hover { transform: translateY(-5px); }
+  .mood-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+  .mc1 { background: #1d1d1d; }
+  .mc1::before { background: var(--teal); }
+  .mc2 { background: #1d1d1d; }
+  .mc2::before { background: var(--red); }
+  .mc3 { background: #1d1d1d; }
+  .mc3::before { background: var(--yellow); }
+  .mc4 { background: #1d1d1d; }
+  .mc4::before { background: var(--pink); }
+  .mood-emoji { font-size: 2.2rem; margin-bottom: .8rem; }
+  .mood-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: .5px;
+    margin-bottom: .4rem;
+  }
+  .mc1 .mood-name { color: var(--teal); }
+  .mc2 .mood-name { color: var(--red); }
+  .mc3 .mood-name { color: var(--yellow); }
+  .mc4 .mood-name { color: var(--pink); }
+  .mood-count {
+    font-size: .62rem; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+  }
+
+  /* ── QUICK RATINGS ── */
+  .ratings-section {
+    padding: 5rem 3.5rem;
+    border-left: 8px solid var(--orange);
+  }
+  .ratings-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 1px;
+    margin-bottom: 3rem;
+  }
+  .ratings-section h2 span { color: var(--orange); }
+  .ratings-list { display: flex; flex-direction: column; gap: 0; }
+  .rating-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid #eee;
+    transition: background .2s;
+    cursor: pointer;
+  }
+  .rating-row:hover { background: rgba(27,138,143,.05); padding-left: .8rem; }
+  .r-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: #ddd;
+    width: 32px;
+    text-align: right;
+  }
+  .r-info { }
+  .r-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    color: var(--charcoal);
+    margin-bottom: .15rem;
+  }
+  .r-meta {
+    font-size: .62rem; letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #bbb;
+  }
+  .r-bar-wrap {
+    width: 120px;
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .r-bar {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 2px;
+    transition: width .8s ease;
+  }
+  .r-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: var(--orange);
+    width: 48px;
+    text-align: right;
+  }
+
+  /* ── WRITE REVIEW CTA ── */
+  .write-cta {
+    margin: 0 3.5rem 5rem;
+    background: var(--teal);
+    padding: 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .write-cta::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 8px;
+    background: var(--yellow);
+  }
+  .write-cta::after {
+    content: 'REVIEW';
+    position: absolute;
+    right: -10px; bottom: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 7rem;
+    color: rgba(255,255,255,.07);
+    line-height: 1;
+    user-select: none;
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: #fff;
+    letter-spacing: 1px;
+    line-height: 1.1;
+  }
+  .cta-title span { color: var(--yellow); }
+  .cta-sub {
+    font-size: .75rem;
+    color: rgba(255,255,255,.6);
+    margin-top: .5rem;
+    line-height: 1.7;
+  }
+  .btn-white {
+    background: #fff;
+    color: var(--teal);
+    padding: .85rem 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: .75rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .2s, transform .15s;
+    position: relative; z-index: 1;
+  }
+  .btn-white:hover { background: var(--yellow); color: var(--charcoal); transform: translateY(-2px); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--charcoal);
+    border-top: 4px solid var(--orange);
+    padding: 3rem 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 1px; margin-bottom: .5rem;
+  }
+  .footer-logo .l { color: #fff; }
+  .footer-logo .a { color: var(--orange); }
+  .footer-logo .b { color: var(--yellow); }
+  .footer-tagline {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic; color: #888; font-size: .9rem; margin-bottom: 1rem;
+  }
+  .footer-url { font-size: .65rem; color: var(--teal); letter-spacing: 2px; }
+  .footer-links h4 {
+    font-size: .65rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1rem;
+  }
+  .footer-links a {
+    display: block; font-size: .75rem; color: #888;
+    text-decoration: none; margin-bottom: .5rem; transition: color .2s;
+  }
+  .footer-links a:hover { color: #fff; }
+  .footer-built { font-size: .65rem; letter-spacing: 1px; color: #555; line-height: 2; }
+  .footer-built span { color: var(--teal); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-up {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .featured-review { grid-template-columns: 1fr; }
+    .reviews-grid { grid-template-columns: 1fr 1fr; }
+    .mood-grid { grid-template-columns: 1fr 1fr; }
+    .ratings-section .r-bar-wrap { display: none; }
+    .write-cta { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .reviews-grid { grid-template-columns: 1fr; }
+    .mood-grid { grid-template-columns: 1fr 1fr; }
+    .filter-bar { padding: 1rem 1.5rem; }
+    .movies-hero .hero-content,
+    .featured-review,
+    .reviews-section,
+    .mood-section,
+    .ratings-section,
+    .gallery-strip,
+    footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .write-cta { margin: 0 1.5rem 3rem; padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <span>LOG</span><span>&</span><span>BLOG</span>
+  </a>
+  <div class="nav-links">
+    <a href="#">Stories</a>
+    <a href="#" class="active">Movies</a>
+    <a href="#">Books</a>
+    <a href="#">Gallery</a>
+  </div>
+  <a class="nav-cta" href="#">Pin your story →</a>
+</nav>
+
+<!-- HERO BANNER -->
+<section class="movies-hero">
+  <div class="film-strip-top">
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+    <div class="film-hole"></div><div class="film-hole"></div><div class="film-hole"></div>
+  </div>
+  <div class="reel reel-1"></div>
+  <div class="reel reel-2"></div>
+  <div class="hero-bg-text">FILMS</div>
+  <div class="hero-content">
+    <div class="hero-badge">MOVIES SECTION</div>
+    <h1 class="hero-title">
+      <span class="accent">FILMS</span> WE<br>
+      <span class="accent2">HAD TO</span> TALK<br>
+      ABOUT
+    </h1>
+    <p class="hero-sub">Late night watches. Emotional damage. Films that lived in our heads rent-free. This is where we write it all down.</p>
+    <div class="hero-stats">
+      <div class="h-stat">
+        <div class="h-stat-num">18</div>
+        <div class="h-stat-label">Reviews</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-num">6</div>
+        <div class="h-stat-label">Genres</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-num">4</div>
+        <div class="h-stat-label">Writers</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>DRAMA</span><span class="ticker-sep">✦</span>
+    <span>THRILLER</span><span class="ticker-sep">✦</span>
+    <span>ROMANCE</span><span class="ticker-sep">✦</span>
+    <span>2AM WATCHES</span><span class="ticker-sep">✦</span>
+    <span>HONEST TAKES</span><span class="ticker-sep">✦</span>
+    <span>NO SPOILERS</span><span class="ticker-sep">✦</span>
+    <span>SCI-FI</span><span class="ticker-sep">✦</span>
+    <span>FILMS THAT HIT DIFFERENT</span><span class="ticker-sep">✦</span>
+    <span>DRAMA</span><span class="ticker-sep">✦</span>
+    <span>THRILLER</span><span class="ticker-sep">✦</span>
+    <span>ROMANCE</span><span class="ticker-sep">✦</span>
+    <span>2AM WATCHES</span><span class="ticker-sep">✦</span>
+    <span>HONEST TAKES</span><span class="ticker-sep">✦</span>
+    <span>NO SPOILERS</span><span class="ticker-sep">✦</span>
+    <span>SCI-FI</span><span class="ticker-sep">✦</span>
+    <span>FILMS THAT HIT DIFFERENT</span><span class="ticker-sep">✦</span>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="setFilter(this)">All</button>
+  <button class="filter-btn" onclick="setFilter(this)">Drama</button>
+  <button class="filter-btn" onclick="setFilter(this)">Thriller</button>
+  <button class="filter-btn" onclick="setFilter(this)">Romance</button>
+  <button class="filter-btn" onclick="setFilter(this)">Sci-Fi</button>
+  <button class="filter-btn" onclick="setFilter(this)">Comedy</button>
+  <button class="filter-btn" onclick="setFilter(this)">Action</button>
+</div>
+
+<!-- FEATURED REVIEW -->
+<section class="featured-review fade-up">
+  <div class="featured-poster">
+    <div class="poster-stripe ps1"></div>
+    <div class="poster-stripe ps2"></div>
+    <div class="poster-stripe ps3"></div>
+    <div class="poster-stripe ps4"></div>
+    <span class="poster-emoji">🌊</span>
+    <div class="poster-badge">EDITOR'S PICK</div>
+    <div class="poster-rating">9.1<span>/10</span></div>
+  </div>
+  <div class="featured-body">
+    <div class="featured-tag">// FEATURED REVIEW · DRAMA</div>
+    <div class="featured-title">Interstellar</div>
+    <div class="featured-year">Christopher Nolan · 2014 · 169 min</div>
+    <div class="featured-quote">"I watched this at 1am and cried for reasons I still can't explain. Something about time, love, and the universe hit me like a freight train."</div>
+    <p class="featured-excerpt">
+      Nolan doesn't make movies — he builds entire worlds and dares you to feel something while thinking too hard. Interstellar is the film that made me realise how small all our problems are, and somehow that made me feel better about everything. The docking scene alone deserves an essay.
+    </p>
+    <div class="featured-meta">
+      <div class="f-meta-item">
+        <div class="f-meta-label">Written by</div>
+        <div class="f-meta-val">Suvam</div>
+      </div>
+      <div class="f-meta-item">
+        <div class="f-meta-label">Read time</div>
+        <div class="f-meta-val">7 min</div>
+      </div>
+      <div class="f-meta-item">
+        <div class="f-meta-label">Vibe</div>
+        <div class="f-meta-val">2am existential</div>
+      </div>
+    </div>
+    <a class="read-btn" href="#">Read full review →</a>
+  </div>
+</section>
+
+<!-- REVIEWS GRID -->
+<section class="reviews-section fade-up">
+  <div class="reviews-header">
+    <h2>All <span>Reviews</span></h2>
+    <a class="see-all" href="#">Submit a review →</a>
+  </div>
+  <div class="reviews-grid">
+
+    <div class="review-card">
+      <div class="rc-poster rp1">
+        <span>🩸</span>
+        <span class="rc-genre genre-thriller">Thriller</span>
+        <span class="rc-score">8.4</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-title">Parasite</div>
+        <div class="rc-year-author">2019 · Bong Joon-ho</div>
+        <p class="rc-excerpt">I went in blind and came out shattered. This film does something no Hollywood movie dares to — it makes you root for everyone and no one at the same time.</p>
+        <div class="rc-footer">
+          <span class="rc-author">By Pawan</span>
+          <span class="rc-read">5 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="rc-poster rp2">
+        <span>🌻</span>
+        <span class="rc-genre genre-romance">Romance</span>
+        <span class="rc-score">8.8</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-title">Call Me By Your Name</div>
+        <div class="rc-year-author">2017 · Luca Guadagnino</div>
+        <p class="rc-excerpt">The summer lighting alone is enough to make you feel things you didn't ask to feel. Timothée Chalamet crying into a peach — cinema at its rawest.</p>
+        <div class="rc-footer">
+          <span class="rc-author">By Niraj</span>
+          <span class="rc-read">4 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="rc-poster rp3">
+        <span>🤖</span>
+        <span class="rc-genre genre-scifi">Sci-Fi</span>
+        <span class="rc-score">9.0</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-title">Her</div>
+        <div class="rc-year-author">2013 · Spike Jonze</div>
+        <p class="rc-excerpt">A movie about falling in love with an AI that somehow made me more aware of what real loneliness feels like. Joaquin Phoenix carried the whole thing on his face.</p>
+        <div class="rc-footer">
+          <span class="rc-author">By Suvam</span>
+          <span class="rc-read">6 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="rc-poster rp4">
+        <span>🌀</span>
+        <span class="rc-genre genre-thriller">Thriller</span>
+        <span class="rc-score">7.9</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-title">Inception</div>
+        <div class="rc-year-author">2010 · Christopher Nolan</div>
+        <p class="rc-excerpt">Still arguing about the ending with my roommate. That spinning top. That cut to black. Nolan knows exactly what he's doing and it drives me crazy in the best way.</p>
+        <div class="rc-footer">
+          <span class="rc-author">By Priyanshu</span>
+          <span class="rc-read">5 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="rc-poster rp5">
+        <span>🎭</span>
+        <span class="rc-genre genre-drama">Drama</span>
+        <span class="rc-score">8.6</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-title">The Perks of Being a Wallflower</div>
+        <div class="rc-year-author">2012 · Stephen Chbosky</div>
+        <p class="rc-excerpt">If you were ever the quiet kid in class who felt everything too deeply — this film sees you. I watched it three times in one week.</p>
+        <div class="rc-footer">
+          <span class="rc-author">By Pawan</span>
+          <span class="rc-read">4 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="rc-poster rp6">
+        <span>🌙</span>
+        <span class="rc-genre genre-drama">Drama</span>
+        <span class="rc-score">9.3</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-title">Moonlight</div>
+        <div class="rc-year-author">2016 · Barry Jenkins</div>
+        <p class="rc-excerpt">Three chapters. One man. A film so quietly devastating that I sat in silence for twenty minutes after it ended. Pure cinema.</p>
+        <div class="rc-footer">
+          <span class="rc-author">By Niraj</span>
+          <span class="rc-read">7 min read</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MOOD SECTION -->
+<section class="mood-section fade-up">
+  <div class="section-label">// BROWSE BY MOOD</div>
+  <h2>What are you <span>feeling tonight?</span></h2>
+  <p class="mood-sub">Pick a vibe. We've got something for every kind of night.</p>
+  <div class="mood-grid">
+    <div class="mood-card mc1">
+      <div class="mood-emoji">🌙</div>
+      <div class="mood-name">Late Night</div>
+      <div class="mood-count">6 films</div>
+    </div>
+    <div class="mood-card mc2">
+      <div class="mood-emoji">💔</div>
+      <div class="mood-name">Emotional Damage</div>
+      <div class="mood-count">5 films</div>
+    </div>
+    <div class="mood-card mc3">
+      <div class="mood-emoji">🤯</div>
+      <div class="mood-name">Mind Bending</div>
+      <div class="mood-count">4 films</div>
+    </div>
+    <div class="mood-card mc4">
+      <div class="mood-emoji">😂</div>
+      <div class="mood-name">Just Vibing</div>
+      <div class="mood-count">3 films</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK RATINGS -->
+<section class="ratings-section fade-up">
+  <div class="section-label">// QUICK TAKES</div>
+  <h2>Films we <span>scored</span></h2>
+  <div class="ratings-list">
+    <div class="rating-row">
+      <div class="r-num">01</div>
+      <div class="r-info">
+        <div class="r-title">Moonlight</div>
+        <div class="r-meta">Drama · 2016</div>
+      </div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:93%"></div></div>
+      <div class="r-score">9.3</div>
+    </div>
+    <div class="rating-row">
+      <div class="r-num">02</div>
+      <div class="r-info">
+        <div class="r-title">Interstellar</div>
+        <div class="r-meta">Sci-Fi · 2014</div>
+      </div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:91%"></div></div>
+      <div class="r-score">9.1</div>
+    </div>
+    <div class="rating-row">
+      <div class="r-num">03</div>
+      <div class="r-info">
+        <div class="r-title">Her</div>
+        <div class="r-meta">Sci-Fi · 2013</div>
+      </div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:90%"></div></div>
+      <div class="r-score">9.0</div>
+    </div>
+    <div class="rating-row">
+      <div class="r-num">04</div>
+      <div class="r-info">
+        <div class="r-title">Call Me By Your Name</div>
+        <div class="r-meta">Romance · 2017</div>
+      </div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:88%"></div></div>
+      <div class="r-score">8.8</div>
+    </div>
+    <div class="rating-row">
+      <div class="r-num">05</div>
+      <div class="r-info">
+        <div class="r-title">The Perks of Being a Wallflower</div>
+        <div class="r-meta">Drama · 2012</div>
+      </div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:86%"></div></div>
+      <div class="r-score">8.6</div>
+    </div>
+    <div class="rating-row">
+      <div class="r-num">06</div>
+      <div class="r-info">
+        <div class="r-title">Parasite</div>
+        <div class="r-meta">Thriller · 2019</div>
+      </div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:84%"></div></div>
+      <div class="r-score">8.4</div>
+    </div>
+    <div class="rating-row">
+      <div class="r-num">07</div>
+      <div class="r-info">
+        <div class="r-title">Inception</div>
+        <div class="r-meta">Thriller · 2010</div>
+      </div>
+      <div class="r-bar-wrap"><div class="r-bar" style="width:79%"></div></div>
+      <div class="r-score">7.9</div>
+    </div>
+  </div>
+</section>
+
+<!-- WRITE REVIEW CTA -->
+<div class="write-cta fade-up">
+  <div>
+    <div class="cta-title">Watched something <span>great lately?</span></div>
+    <p class="cta-sub">Write about it. No film school required. Just your honest take — what you felt, what hit you, what stuck with you. We'll publish it.</p>
+  </div>
+  <a class="btn-white" href="#">Write a review →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">
+      <span class="l">LOG </span><span class="a">& </span><span class="b">BLOG</span>
+    </div>
+    <div class="footer-tagline">Not perfect, not planned — just honest.</div>
+    <div class="footer-url">logandblog.com</div>
+  </div>
+  <div class="footer-links">
+    <h4>Explore</h4>
+    <a href="#">Stories</a>
+    <a href="#" style="color:#fff;">Movies</a>
+    <a href="#">Books</a>
+    <a href="#">College</a>
+    <a href="#">Gallery</a>
+    <a href="#">Thoughts</a>
+  </div>
+  <div class="footer-built">
+    <div>Built with</div>
+    <div><span>HTML · CSS · JS</span></div>
+    <div><span>Firebase Firestore</span></div>
+    <div><span>Firebase Hosting</span></div>
+    <div style="margin-top:1rem; color:#444;">Made for Webathon 2025</div>
+    <div style="color:#333;">© 2025 Log & Blog — Guwahati, Assam</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Filter buttons
+  function setFilter(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Animate rating bars on scroll
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.r-bar').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0';
+          setTimeout(() => { bar.style.width = w; }, 100);
+        });
+        barObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  const ratingsSection = document.querySelector('.ratings-section');
+  if (ratingsSection) barObserver.observe(ratingsSection);
+</script>
+</body>
+</html>
